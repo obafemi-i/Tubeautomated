@@ -1,4 +1,3 @@
-from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from schemas.schema import UserCreate, UserResponse
@@ -17,7 +16,6 @@ def get_db():
         db.close()
 
 
-
 def create_user(obj: UserCreate, db: Session) -> UserResponse:
     hashed_password = get_password_hash(obj.password)
     new_obj = User(
@@ -25,7 +23,6 @@ def create_user(obj: UserCreate, db: Session) -> UserResponse:
         password = hashed_password,
         first_name = obj.first_name
     )
-
     db.add(new_obj)
     db.commit()
     db.refresh(new_obj)

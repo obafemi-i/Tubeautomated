@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
 
 from crud.user import get_all_users, get_by_email, create_user, get_db
 from security.hashing import verify_password
@@ -10,13 +12,17 @@ from schemas.schema import UserCreate, UserResponse
 from models.model import User
 
 
-router = APIRouter(tags=['Auth'])
+router = APIRouter(tags=['Auth'], prefix='/auth')
 
 
 @router.post('/create', response_model=UserResponse, response_description='Create a new user.', status_code=status.HTTP_201_CREATED)
 def create(request: UserCreate, db: Session = Depends(get_db)):
-    user = create_user(obj=request, db=db)
-    return user
+    try:
+        user = create_user(obj=request, db=db)
+        return user
+    except IntegrityError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f'User with the email {request.email} already exists')
 
 
 @router.get('/users', response_model=list[UserResponse], response_description='Retrieve all users, Admin only.', status_code=status.HTTP_200_OK)

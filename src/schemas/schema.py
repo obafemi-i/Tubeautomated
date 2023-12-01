@@ -22,3 +22,10 @@ class TokenData(BaseModel):
     email: str | None = None
     first_name: str | None = None
 
+
+class Video(BaseModel):
+    youtuber_email: str
+    video_description: str
+    video_title: str
+    video_category_id: str
+
