@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from dotenv import dotenv_values
+
 from security.oauth import get_current_user
 from utils.sentry import sentryMessage
 
