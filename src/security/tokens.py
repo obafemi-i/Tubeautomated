@@ -25,7 +25,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 def verify_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print('payload be', payload)
+        # print('payload be', payload)
         email: str = payload.get('sub')
         name: str = payload.get('name')
 
