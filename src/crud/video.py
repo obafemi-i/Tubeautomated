@@ -41,13 +41,14 @@ async def take_video(youtuber_email: str, video_description: str,
     fs = gridfs.GridFS(database)
 
     try:
-        file_id = await fs.put(file.file, uploadby=current_user.get('name'), 
+        file_id = fs.put(file.file, uploadby=current_user.get('name'), 
                          video_title=video_title, video_category_id=video_category_id,
                          video_description=video_description)
     except Exception as err:
         print(err)
+        sentryError(err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail='Something went, please try again.')
+                            detail='Something went wrong, please try again.')
 
 
     queue_message = {
@@ -57,13 +58,13 @@ async def take_video(youtuber_email: str, video_description: str,
     }
 
     try:
-        await redis_connect.xadd('videoDB_upload', queue_message, '*')
+        redis_connect.xadd('videoDB_upload', queue_message, '*')
         print('queue message be',queue_message)
     except Exception as err:
-        await fs.delete(file_id)
+        fs.delete(file_id)
         print(err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail='Something went, please try again.')
+                            detail='Something went wrong here, please try again.')
     
     return 'Upload sucessful! The Youtuber will be notified.'
 
