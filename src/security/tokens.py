@@ -36,5 +36,6 @@ def verify_token(token: str, credentials_exception):
     except JWTError:
         raise credentials_exception
     
-    return token_data
+    # return token_data
+    return payload
 

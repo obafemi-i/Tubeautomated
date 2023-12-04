@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from crud.video import take_video
-from schemas.schema import TokenData
+from schemas.schema import TokenData, VideoAdd
 
 from security.oauth import get_current_user
 from utils.sentry import sentryMessage
 
 
 router = APIRouter(tags=['Videos'])
+
 
 @router.post('/add-video')
 async def collect_videos(current_user: TokenData = Depends(get_current_user)):

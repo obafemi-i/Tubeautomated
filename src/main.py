@@ -1,16 +1,16 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from pymongo import MongoClient
-
-import gridfs
-from contextlib import asynccontextmanager
-
 from dotenv import dotenv_values
+
+from contextlib import asynccontextmanager
 
 from routes.auth import router as authroute
 from routes.videos import router as videorouter
 
+from crud.video import take_video
+from security.oauth import get_current_user
 
 config = dotenv_values()
 
@@ -45,5 +45,14 @@ app.include_router(videorouter)
 
 
 @app.get('/', tags=['Home'])
-def read_root():
+async def read_root():
     return 'Server is running..'
+
+# def video_db(body: VideoAdd,file: UploadFile = File(...), current_user = Depends(get_current_user)):
+
+@app.post('/upload-video-to-db', tags=['Videos'])
+async def video_db(youtuber_email: str, video_description: str, 
+               video_title: str, video_category_id: str,file: UploadFile = File(...), current_user = Depends(get_current_user)):
+    # print('add be', add.youtuber_email)
+    return await take_video(youtuber_email, video_description, video_title, video_category_id, file=file, current_user=current_user, database=app.database)
+

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr
 
 class UserCreate(BaseModel):
     email: EmailStr = Field(examples=['tube@automated.com'])
@@ -23,9 +23,16 @@ class TokenData(BaseModel):
     first_name: str | None = None
 
 
-class Video(BaseModel):
-    youtuber_email: str
+class VideoAdd(BaseModel):
+    youtuber_email: str 
     video_description: str
     video_title: str
     video_category_id: str
 
+
+class Video:
+    def __init__(self, youtuber_email: str, video_description: str, video_title: str, video_category_id: str):
+        self.youtuber_email = youtuber_email
+        self.video_description = video_description
+        self.video_title = video_title
+        self.video_category_id = video_category_id
