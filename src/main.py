@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 from routes.auth import router as authroute
 from routes.videos import router as videorouter
 
-from crud.video import take_video
+from crud.video import take_video, retreive_user_videos
 from security.oauth import get_current_user
 
 config = dotenv_values()
@@ -56,3 +56,9 @@ async def video_db(youtuber_email: str, video_description: str,
     # print('add be', add.youtuber_email)
     return await take_video(youtuber_email, video_description, video_title, video_category_id, file=file, current_user=current_user, database=app.database)
 
+
+
+@app.get('/all-videos')
+def get_user_video(current_user = Depends(get_current_user)):
+    files = retreive_user_videos(current_user, app.database)
+    return files

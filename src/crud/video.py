@@ -68,3 +68,15 @@ async def take_video(youtuber_email: str, video_description: str,
     
     return 'Upload sucessful! The Youtuber will be notified.'
 
+
+
+def retreive_user_videos(current_user, database):
+    names = []
+    fs = gridfs.GridFS(database)
+    for fid in fs.find({'uploadby': current_user}):
+        names.append(fid.filename)
+        
+    if len(names) == 0:
+        return "You haven't uploaded any videos yet."
+    return names
+
