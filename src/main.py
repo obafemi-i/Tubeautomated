@@ -58,7 +58,7 @@ async def video_db(youtuber_email: str, video_description: str,
 
 
 
-@app.get('/all-videos')
-def get_user_video(current_user = Depends(get_current_user)):
-    files = retreive_user_videos(current_user, app.database)
+@app.get('/all-videos', tags=['Videos'])
+async def get_user_video(current_user = Depends(get_current_user)):
+    files = await retreive_user_videos(current_user, app.database)
     return files

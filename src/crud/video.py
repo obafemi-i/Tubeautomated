@@ -70,7 +70,7 @@ async def take_video(youtuber_email: str, video_description: str,
 
 
 
-def retreive_user_videos(current_user, database):
+async def retreive_user_videos(current_user, database):
     names = []
     fs = gridfs.GridFS(database)
     for fid in fs.find({'uploadby': current_user}):
